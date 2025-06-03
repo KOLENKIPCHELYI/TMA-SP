@@ -21,3 +21,20 @@ enableIndexedDbPersistence(db).catch((err) => {
 });
 
 export { db, auth };
+
+import { signInWithCustomToken } from "firebase/auth";
+
+export const loginWithTelegram = async (telegramUser) => {
+  // 1. Отправляем Telegram-данные на ваш сервер (например, Firebase Functions)
+  const response = await fetch('https://your-firebase-function-url/generateToken', {
+    method: 'POST',
+    body: JSON.stringify({
+      id: telegramUser.id,
+      username: telegramUser.username
+    })
+  });
+  const { token } = await response.json();
+
+  // 2. Входим в Firebase с кастомным токеном
+  await signInWithCustomToken(auth, token);
+};
